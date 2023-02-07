@@ -6,7 +6,7 @@ const initialState = {
     users: [{
         id: '',
         name: '',
-        age: 0,
+        age: '',
         location: '',
     }] as UserType[],
 }
@@ -19,6 +19,11 @@ const slice = createSlice({
         builder.addCase(fetchUsersTC.fulfilled, (state, action) => {
             if (action.payload) {
                 state.users = action.payload
+            }
+        })
+        builder.addCase(createNewUserTC.fulfilled, (state, action) => {
+            if (action.payload) {
+                state.users.unshift(action.payload.data)
             }
         })
     },
@@ -38,10 +43,9 @@ export const fetchUsersTC = createAsyncThunk(
         }
     }
 )
-export const createNewUserTC = createAsyncThunk<{data: CreateUserResponseType},
+export const createNewUserTC = createAsyncThunk<{ data: CreateUserResponseType },
     CreateUserPayloadType,
-    AsyncThunkConfig
-    >(
+    AsyncThunkConfig>(
     'users/createNewUser',
     async (payload, thunkAPI) => {
         try {
@@ -49,9 +53,9 @@ export const createNewUserTC = createAsyncThunk<{data: CreateUserResponseType},
             return {data: res.data}
         } catch {
             alert('error')
-           return thunkAPI.rejectWithValue({
-               errors: ['some error occurred']
-           })
+            return thunkAPI.rejectWithValue({
+                errors: ['some error occurred']
+            })
 
         }
     }
@@ -64,7 +68,7 @@ export type UserType = {
     id: string
     name: string
     location: string
-    age: number
+    age: string
 }
 type AsyncThunkConfig = {
     state?: unknown
@@ -77,9 +81,9 @@ type AsyncThunkConfig = {
     rejectedMeta?: unknown
 }
 export type CreateUserResponseType = {
-    id:string
+    id: string
     name: string
-    age: number
+    age: string
     location: string
 }
 export type CreateUserPayloadType = {

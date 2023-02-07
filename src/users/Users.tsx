@@ -1,31 +1,25 @@
 import React from 'react';
 import {useAppDispatch, useAppSelector} from "../app/store";
 import {fetchUsersTC, usersSelector} from "./usersReducer";
-import {User} from "./User/User";
-import Button from "@mui/material/Button";
 import {NewUserForm} from "./NewUserForm/NewUserForm";
 import s from '../users/Users.module.scss'
+import {UsersTable} from "./UsersTable/UsersTable";
+import {CommonButton} from "../common/CommonButton";
 
 export const Users = () => {
     const users = useAppSelector(usersSelector)
     const dispatch = useAppDispatch()
 
-    const usersList = users.map((u) => {
-        return <User key={u.id} name={u.name} age={u.age} location={u.location}/>
-    })
-
-    const GetUsersHandler = () => {
+    const getUsersHandler = () => {
         dispatch(fetchUsersTC())
     }
+    console.log(users)
     return (
         <div className={s.wrapper}>
             <NewUserForm/>
-            <Button
-                style={{width:'150px'}}
-                className={s.btn}
-                    variant={'contained'}
-                    onClick={GetUsersHandler}>Get Users</Button>
-            {usersList}
+            <CommonButton title={'Get Users'} onClick={getUsersHandler}/>
+            {users && <UsersTable/>}
+            {users && <div>LOADING</div>}
         </div>
     );
 };

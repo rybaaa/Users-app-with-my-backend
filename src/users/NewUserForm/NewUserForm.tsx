@@ -18,7 +18,7 @@ export const NewUserForm = () => {
         age: yup.string().required('Age is required').max(3, 'Not correct age'),
         location: yup.string().required('Location is required').max(15, 'Maximum length is 15 symbols')
     })
-    const {errors, touched, handleSubmit, getFieldProps} = useFormik({
+    const {errors, touched, handleSubmit, getFieldProps, resetForm} = useFormik({
         initialValues: {
             name: '',
             age: '',
@@ -27,12 +27,13 @@ export const NewUserForm = () => {
         validationSchema: validationSchema,
         onSubmit: values => {
             dispatch(createNewUserTC(values))
+            resetForm();
         },
     })
     return (
         <div className={s.wrapper}>
             <form onSubmit={handleSubmit}>
-                <FormGroup style={{display:'flex', alignItems:'center'}}>
+                <FormGroup style={{display: 'flex', alignItems: 'center'}}>
                     <div className={s.form}>
                         <div className={s.form_item}>
                             <h4>Name</h4>
@@ -72,7 +73,7 @@ export const NewUserForm = () => {
                         variant={'contained'}
                         type={'submit'}
                         className={s.btn}
-                        style={{width:'150px'}}
+                        style={{width: '150px'}}
                     >
                         Add new user
                     </Button>
