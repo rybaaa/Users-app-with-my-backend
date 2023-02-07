@@ -17,7 +17,9 @@ const slice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder.addCase(fetchUsersTC.fulfilled, (state, action) => {
-            state.users = action.payload
+            if (action.payload) {
+                state.users = action.payload
+            }
         })
     },
 })
@@ -28,8 +30,30 @@ export const usersReducer = slice.reducer
 export const fetchUsersTC = createAsyncThunk(
     'users/fetchUsers',
     async () => {
-        const res = await usersApi.getUsers()
-        return res.data
+        try {
+            const res = await usersApi.getUsers()
+            return res.data
+        } catch {
+            alert('error')
+        }
+    }
+)
+export const createNewUserTC = createAsyncThunk<{data: CreateUserResponseType},
+    CreateUserPayloadType,
+    AsyncThunkConfig
+    >(
+    'users/createNewUser',
+    async (payload, thunkAPI) => {
+        try {
+            const res = await usersApi.createUser(payload)
+            return {data: res.data}
+        } catch {
+            alert('error')
+           return thunkAPI.rejectWithValue({
+               errors: ['some error occurred']
+           })
+
+        }
     }
 )
 //export type UsersActionsType = ReturnType<typeof setDataAC> | ReturnType<typeof deleteUserDataAC>
@@ -51,4 +75,15 @@ type AsyncThunkConfig = {
     pendingMeta?: unknown
     fulfilledMeta?: unknown
     rejectedMeta?: unknown
+}
+export type CreateUserResponseType = {
+    id:string
+    name: string
+    age: number
+    location: string
+}
+export type CreateUserPayloadType = {
+    name: string
+    age: string
+    location: string
 }

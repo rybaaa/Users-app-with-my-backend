@@ -1,5 +1,5 @@
 import axios from "axios";
-import {UserType} from "../users/usersReducer";
+import {CreateUserPayloadType, CreateUserResponseType, UserType} from "../users/usersReducer";
 
 const instance = axios.create({
     baseURL: 'https://express-app-vert.vercel.app/',
@@ -7,5 +7,8 @@ const instance = axios.create({
 
 export const usersApi = {
     getUsers() {
-        return instance.get<UserType[]>('users')}
+        return instance.get<UserType[]>('users')},
+    createUser(payload: CreateUserPayloadType){
+        return instance.post<CreateUserResponseType>('users', payload)
+    }
 }
